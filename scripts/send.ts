@@ -1,21 +1,35 @@
-import { address, appendTransactionMessageInstructions, assertIsTransactionWithBlockhashLifetime, createTransactionMessage, getSignatureFromTransaction, lamports, pipe, sendAndConfirmTransactionFactory, setTransactionMessageFeePayerSigner, setTransactionMessageLifetimeUsingBlockhash, signTransactionMessageWithSigners } from "@solana/kit";
-import { loadSignerFromFile, rpc,rpcSubscriptions } from "./lib/solana.js";
+import {
+  address,
+  appendTransactionMessageInstructions,
+  assertIsTransactionWithBlockhashLifetime,
+  createTransactionMessage,
+  getSignatureFromTransaction,
+  lamports,
+  pipe,
+  sendAndConfirmTransactionFactory,
+  setTransactionMessageFeePayerSigner,
+  setTransactionMessageLifetimeUsingBlockhash,
+  signTransactionMessageWithSigners,
+} from "@solana/kit";
+import { loadSignerFromFile, rpc, rpcSubscriptions } from "./lib/solana.js";
 import { getTransferSolInstruction } from "@solana-program/system";
 
-async function main() { 
+async function main() {
   const senderKeypairPath = process.argv[2];
   const recipientAddressInput = process.argv[3];
   const amountSolInput = process.argv[4];
 
   if (!senderKeypairPath || !recipientAddressInput || !amountSolInput) {
-    throw new Error("Usage: pnpm tsx scripts/send.ts <SENDER_KEYPAIR_PATH> <RECIPIENT_ADDRESS> <AMOUNT_SOL>");
+    throw new Error(
+      "Usage: pnpm tsx scripts/send.ts <SENDER_KEYPAIR_PATH> <RECIPIENT_ADDRESS> <AMOUNT_SOL>",
+    );
   }
 
   const sender = await loadSignerFromFile(senderKeypairPath);
   const recipientAddress = address(recipientAddressInput);
   const amountSol = Number(amountSolInput);
 
-  if (!Number.isFinite(amountSol) || amountSol <= 0) { 
+  if (!Number.isFinite(amountSol) || amountSol <= 0) {
     throw new Error("Amount must be +ve SOL");
   }
 
@@ -49,9 +63,13 @@ async function main() {
 
   console.log({
     signature: getSignatureFromTransaction(signedTransaction),
+    onexplorer:
+      "https://explorer.solana.com/tx/" +
+      getSignatureFromTransaction(signedTransaction) +
+      "?cluster=devnet",
     from: sender.address,
     to: recipientAddress,
-    amountSol
+    amountSol,
   });
 }
 

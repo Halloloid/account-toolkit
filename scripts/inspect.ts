@@ -20,7 +20,7 @@ async function main() {
     exist: true,
     address: input,
     lamports: account.lamports.toString(),
-    owner:account.programAddress,
+    owner: account.programAddress,
     executable: account.executable,
     dataLength: account.data.length,
   });
